@@ -12,6 +12,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #create executable
 add_executable(orderbook
     src/main.cpp
+    src/helper.cpp
 )
 
 #include directories
