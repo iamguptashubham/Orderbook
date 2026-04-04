@@ -1,0 +1,91 @@
+# =========================
+
+# Build directories
+
+# =========================
+
+build/
+cmake-build-*/
+out/
+
+# =========================
+
+# CMake files
+
+# =========================
+
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# =========================
+
+# Binaries & object files
+
+# =========================
+
+*.o
+*.obj
+*.so
+*.dylib
+*.a
+*.out
+*.exe
+
+# macOS specific
+
+*.dSYM/
+
+# =========================
+
+# Logs
+
+# =========================
+
+*.log
+
+# =========================
+
+# IDE / Editor files
+
+# =========================
+
+# VS Code
+
+.vscode/
+
+# CLion / JetBrains
+
+.idea/
+
+# Vim
+
+*.swp
+
+# =========================
+
+# macOS system files
+
+# =========================
+
+.DS_Store
+
+# =========================
+
+# Commitizen / Python (if used)
+
+# =========================
+
+**pycache**/
+*.pyc
+
+# =========================
+
+# Misc
+
+# =========================
+
+.env
+
