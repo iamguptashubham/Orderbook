@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/Users/shubham/shubham/cpp/Orderbook/build",
+  "command": "/usr/bin/c++  -I/Users/shubham/shubham/cpp/Orderbook/include  -arch arm64 -o CMakeFiles/orderbook.dir/src/main.cpp.o -c /Users/shubham/shubham/cpp/Orderbook/src/main.cpp",
+  "file": "/Users/shubham/shubham/cpp/Orderbook/src/main.cpp",
+  "output": "CMakeFiles/orderbook.dir/src/main.cpp.o"
+}
+]
