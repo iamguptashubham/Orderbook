@@ -1,7 +1,5 @@
 #include "../include/orderbook.h"
 
-#include "orderbook.h"
-
 Orderbook::Orderbook(bool generate_dummies) {
     srand(12);
 
@@ -107,6 +105,43 @@ inline std::pair<int, double> Orderbook::fill_order(
     return std::make_pair(unit_transacted, total_value);
 }
 
+template <typename T>
+void Orderbook::print_leg(std::map<double, std::deque<std::unique_ptr<Order>>, T>& orders,
+                          BookSide side) {
+    if (side == BookSide::ask) {
+        for (auto it = orders.rbegin(); it != orders.rend(); it++) {
+            int size_sum{0};
+            for (auto& order : it->second) {
+                size_sum += order->quantity;
+            }
+
+            std::string color = "31";  // red for ask
+            std::cout << "\t\033[1;" << color << "m" << "$" << std::setw(6) << std::fixed
+                      << std::setprecision(2) << it->first << std::setw(5) << size_sum
+                      << "\033[0m ";
+            for (int i = 0; i < size_sum / 10; i++) {
+                std::cout << "█";
+            }
+            std::cout << "\n";
+        }
+    } else if (side == BookSide::bid) {
+        for (auto it = orders.begin(); it != orders.end(); ++it) {
+            int size_sum = 0;
+            for (auto& order : it->second) {
+                size_sum += order->quantity;
+            }
+            std::string color = "32";  // green for bids
+            std::cout << "\t\033[1;" << color << "m" << "$" << std::setw(6) << std::fixed
+                      << std::setprecision(2) << it->first << std::setw(5) << size_sum
+                      << "\033[0m ";
+            for (int i = 0; i < size_sum / 10; i++) {
+                std::cout << "█";
+            }
+            std::cout << "\n";
+        }
+    }
+}
+
 std::pair<int, double> Orderbook::handle_order(OrderType type, int order_qty, Side side,
                                                double price) {
     int units_transacted = 0;
@@ -152,6 +187,58 @@ std::pair<int, double> Orderbook::handle_order(OrderType type, int order_qty, Si
     return std::make_pair(units_transacted, total_value);
 }
 
+bool Orderbook::modifyOrder(uint64_t id, int new_qty) {
+    auto [side, price] = m_order_metadata[id];
+
+    auto modify_order_in_map = [&](auto& order_map) -> bool {
+        for (auto& o : order_map[price]) {
+            if (o->id == id) {
+                o->quantity = new_qty;
+                return true;
+            }
+        }
+        return false;
+    };
+
+    if (side == BookSide::ask) {
+        return modify_order_in_map(m_asks);
+    } else if (side == BookSide::bid) {
+        return modify_order_in_map(m_bids);
+    }
+    return false;
+}
+
+bool Orderbook::deleteOrder(uint64_t id) {  // Sweep through the book
+    auto [side, price] = m_order_metadata[id];
+    m_order_metadata.erase(id);
+
+    auto remove_from_map = [&](auto& order_map) -> bool {
+        auto& orders = order_map[price];
+        bool removed = false;
+
+        for (auto qit = orders.begin(); qit != orders.end(); qit++) {
+            if ((*qit)->id == id) {
+                orders.erase(qit);
+                removed = true;
+                break;
+            }
+        }
+
+        // Check if we removed the last value in the queue
+        if (orders.empty()) {
+            order_map.erase(price);
+        }
+        return removed;
+    };
+
+    if (side == BookSide::bid) {
+        return remove_from_map(m_bids);
+    } else if (side == BookSide::ask) {
+        return remove_from_map(m_asks);
+    }
+    return false;
+}
+
 double Orderbook::best_quote(BookSide side) {
     if (side == BookSide::bid) {
         return m_bids.begin()->first;
@@ -159,4 +246,18 @@ double Orderbook::best_quote(BookSide side) {
         return m_asks.begin()->first;
     }
     return 0.0;
+}
+
+void Orderbook::print() {
+    std::cout << "========== Orderbook =========" << "\n";
+    print_leg(m_asks, BookSide::ask);
+
+    // Print bid-ask spread (in basis points)
+    double best_ask = best_quote(BookSide::ask);
+    double best_bid = best_quote(BookSide::bid);
+    std::cout << "\n\033[1;33m" << "======  " << 10000 * (best_ask - best_bid) / best_bid
+              << "bps  ======\033[0m\n\n";
+
+    print_leg(m_bids, BookSide::bid);
+    std::cout << "==============================\n\n\n";
 }
