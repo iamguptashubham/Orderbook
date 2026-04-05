@@ -10,10 +10,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 #create executable
-add_executable(orderbook
+add_executable(Orderbook
     src/main.cpp
     src/helper.cpp
+    src/orderbook.cpp
 )
 
 #include directories
-target_include_directories(orderbook PRIVATE include)
+target_include_directories(Orderbook PRIVATE include)
