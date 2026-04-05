@@ -33,7 +33,7 @@ class Orderbook {
         std::map<double, std::deque<std::unique_ptr<Order>>, T>& offers, const OrderType type,
         const Side side, int& order_qty, double price, int& unit_transacted, double& total_value);
 
-    double best_quote(Side side);
+    double best_quote(BookSide side);
 
     const auto& get_bids() {
         return m_bids;
@@ -47,10 +47,3 @@ class Orderbook {
 
     void print();
 };
-
-template <typename T>
-inline std::pair<int, double> Orderbook::fill_order(
-    std::map<double, std::deque<std::unique_ptr<Order>>, T>& offers, const OrderType type,
-    const Side side, int& order_qty, double price, int& unit_transacted, double& total_value) {
-    return std::pair<int, double>();
-}
