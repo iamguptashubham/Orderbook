@@ -5,7 +5,7 @@ Orderbook::Orderbook(bool generate_dummies) {
 
     if (generate_dummies) {
         // Add some dummy bid orders
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 6; i++) {
             double random_price = 90.0 + (rand() % 1001) / 100.0;
             int random_qty = rand() % 100 + 1;
             int random_qty2 = rand() % 100 + 1;
@@ -17,7 +17,7 @@ Orderbook::Orderbook(bool generate_dummies) {
         }
 
         // Add some dummy ask orders
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 6; i++) {
             double random_price = 100.0 + (rand() % 1001) / 100.0;
             int random_qty = rand() % 100 + 1;
             int random_qty2 = rand() % 100 + 1;
@@ -116,7 +116,7 @@ void Orderbook::print_leg(std::map<double, std::deque<std::unique_ptr<Order>>, T
             }
 
             std::string color = "31";  // red for ask
-            std::cout << "\t\033[1;" << color << "m" << "$" << std::setw(6) << std::fixed
+            std::cout << "\t\033[1;" << color << "m" << "Rs." << std::setw(6) << std::fixed
                       << std::setprecision(2) << it->first << std::setw(5) << size_sum
                       << "\033[0m ";
             for (int i = 0; i < size_sum / 10; i++) {
@@ -131,7 +131,7 @@ void Orderbook::print_leg(std::map<double, std::deque<std::unique_ptr<Order>>, T
                 size_sum += order->quantity;
             }
             std::string color = "32";  // green for bids
-            std::cout << "\t\033[1;" << color << "m" << "$" << std::setw(6) << std::fixed
+            std::cout << "\t\033[1;" << color << "m" << "Rs" << std::setw(6) << std::fixed
                       << std::setprecision(2) << it->first << std::setw(5) << size_sum
                       << "\033[0m ";
             for (int i = 0; i < size_sum / 10; i++) {
@@ -255,8 +255,8 @@ void Orderbook::print() {
     // Print bid-ask spread (in basis points)
     double best_ask = best_quote(BookSide::ask);
     double best_bid = best_quote(BookSide::bid);
-    std::cout << "\n\033[1;33m" << "======  " << 10000 * (best_ask - best_bid) / best_bid
-              << "bps  ======\033[0m\n\n";
+    std::cout << "\n\033[1;33m" << "=== BID ASK SPREAD " << (best_ask - best_bid)
+              << " Rs. ===\033[0m\n\n";
 
     print_leg(m_bids, BookSide::bid);
     std::cout << "==============================\n\n\n";

@@ -51,6 +51,8 @@ int main() {
                 u_int64_t end_time = unix_time();
                 print_fill(fill, quantity, start_time, end_time);
             }
+        } else {
+            std::cout << "Invalid Option! Please try again \n";
         }
     }
     return 0;
